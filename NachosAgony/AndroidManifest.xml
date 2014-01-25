@@ -26,9 +26,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.ccvii.nachos.Level"
+            android:name="com.ccvii.nachos.PantallaNivel"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_level"
+            android:label="@string/title_activity_pantalla_nivel"
             android:theme="@style/FullscreenTheme" >
         </activity>
     </application>

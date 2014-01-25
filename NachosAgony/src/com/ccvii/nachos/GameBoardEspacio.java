@@ -1,23 +1,20 @@
 package com.ccvii.nachos;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Random;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PointF;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.SparseArray;
-import android.view.View;
 import android.view.MotionEvent;
+import android.view.View;
 
 
 public class GameBoardEspacio extends View{
@@ -57,6 +54,9 @@ public class GameBoardEspacio extends View{
 		this.divisor = 20;
 		
 	}
+	
+
+
 	
 	private void initializeStars(int maxX, int maxY) {
 		starField = new ArrayList<Point>();
