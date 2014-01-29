@@ -1,6 +1,7 @@
 package com.ccvii.nachos;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import android.content.Context;
@@ -36,7 +37,7 @@ public class GameBoardTierra extends View{
 	public boolean movingUp = false;
 	public boolean movingDown = false;
 	
-	private Bitmap bmp = BitmapFactory.decodeResource(this.getResources(), R.drawable.ic_launcher);
+	HashMap<String,Bitmap> nachoBmp = new HashMap<String, Bitmap>();
 	
 	private SparseArray<PointF> mActivePointers = new SparseArray<PointF>();
 	
@@ -54,6 +55,12 @@ public class GameBoardTierra extends View{
 		this.x = 500;
 		this.y = 200;
 		this.divisor = 20;
+		
+
+		nachoBmp.put("der",  BitmapFactory.decodeResource(this.getResources(), R.drawable.nacho_der));
+		nachoBmp.put("izq", BitmapFactory.decodeResource(this.getResources(), R.drawable.nacho_izq));
+		nachoBmp.put("ultimo", BitmapFactory.decodeResource(this.getResources(), R.drawable.nacho_der));
+		
 		
 	}
 	
@@ -87,17 +94,34 @@ public class GameBoardTierra extends View{
 		
 		
 		if(movingLeft)
+		{
 			x-= 5;
+			Bitmap bm = nachoBmp.get("izq");
+			canvas.drawBitmap(bm,x,y - bm.getHeight(),p);
+			nachoBmp.put("ultimo", bm);
+		}
 		else if (movingRight)
+		{
 			x+= 5;
+			Bitmap bm = nachoBmp.get("der");
+			canvas.drawBitmap(bm,x,y - bm.getHeight(),p);
+			nachoBmp.put("ultimo", bm);
+		}else
+		{
+			Bitmap bm = nachoBmp.get("ultimo");
+			canvas.drawBitmap(bm,x,y - bm.getHeight(),p);
+			
+		}
 		
 		if(y < 600){
 			if(!movingUp)
 			 y+= 10;
 		}
-		else if (y >= 600 )
+		else if (y >= 600  && movingDown)
 		{
 			movingDown = false;
+			movingLeft = false;
+			movingRight= false;
 			
 		}
 		
@@ -117,7 +141,10 @@ public class GameBoardTierra extends View{
 		}
 		
 		
-		canvas.drawBitmap(bmp,x,y,p);
+		
+		
+		p.setColor(Color.WHITE);
+		canvas.drawLine(0, 600, this.getWidth(), 600, p);
 		
 		
 		if(debug)
@@ -125,6 +152,8 @@ public class GameBoardTierra extends View{
 			p.setTextSize(40);
 			canvas.drawText("X:"+this.x+",Y" + this.y, this.x, this.y, p);
 		}
+		
+		
 		
 		for(int e = 0; e< disparos.size(); e++)
 		{
@@ -156,11 +185,11 @@ public class GameBoardTierra extends View{
 	    	if( event.getPointerCount()< 2) {
 	  	      
 		     if(event.getX(0)  > this.getWidth() -  250) 
-			    	this.AgregarDisparo((int)event.getX(0) ,(int)event.getX(0) );
+			    	this.AgregarDisparo((int)event.getX(0) ,(int)event.getY(0) );
 	    	}else
 	    	{
 	    		if(event.getX(1)  > this.getWidth() -  250) 
-			    	this.AgregarDisparo((int)event.getX(1) ,(int)event.getX(1) );
+			    	this.AgregarDisparo((int)event.getX(1) ,(int)event.getY(1) );
 	    	}
 		     break;
 		     
@@ -175,12 +204,12 @@ public class GameBoardTierra extends View{
 		     else if(tX< 400)
 		    	 movingRight = true;
 		     
-		     if(tX < 400)
+		     if(tX < 400 && !movingUp && !movingDown)
 		     { 
 		    	 if(tY < 550)
 		    		 movingUp = true;
 		     }
-		
+		     
 		     break;
 	    case MotionEvent.ACTION_UP:
 	    case MotionEvent.ACTION_POINTER_UP:
@@ -208,8 +237,11 @@ public class GameBoardTierra extends View{
 	{
 		int moveX = 10;
 
-		int difY = (this.y-aY);
+		int difY = this.y-aY;
 		int difX = aX-this.x;
+		
+		if(difY <= 0)
+			difY = 1;
 		
 		int moveY = moveX /((int)((difX)/ ((difY))));
 		
